@@ -66,6 +66,7 @@ import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.ui.theme.MovieAppMAD24Theme
 import org.w3c.dom.Text
 import androidx.compose.foundation.Image
+import androidx.compose.material.icons.filled.Favorite
 
 
 class MainActivity : ComponentActivity() {
@@ -73,6 +74,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MovieRow(movie: Movie){
         var expanded by remember { mutableStateOf(false) }
+        var favorited by remember { mutableStateOf(false) }
 
         Card (modifier = Modifier
             .fillMaxWidth()
@@ -103,9 +105,11 @@ class MainActivity : ComponentActivity() {
                         contentAlignment = Alignment.TopEnd
                     ) {
                         Icon(
-                            tint = MaterialTheme.colorScheme.secondary,
-                            imageVector = Icons.Default.FavoriteBorder,
-                            contentDescription = "Add to favorites"
+                            //tint = MaterialTheme.colorScheme.secondary,
+
+                            modifier = Modifier.clickable {favorited = !favorited   },
+                            imageVector = if (favorited) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = if (favorited) "Remove from Favorites" else "Add to Favorites"
                         )
                     }
 
@@ -115,7 +119,7 @@ class MainActivity : ComponentActivity() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = movie.title)
+                    Text(text = movie.title, style=MaterialTheme.typography.titleMedium)
                     Icon(modifier = Modifier.clickable {expanded = !expanded   },
                         imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                         contentDescription = if (expanded) "Collapse" else "Expand")
@@ -128,6 +132,74 @@ class MainActivity : ComponentActivity() {
             }
         }
         }
+
+    @Composable
+    fun MovieApp() {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            AppScaffold()
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun AppScaffold() {
+        Scaffold(
+            topBar = { AppTopBar() },
+            bottomBar = { AppBottomBar() }
+        ) { innerPadding ->
+            MovieList(movies = getMovies(), innerPaddingValues = innerPadding)
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun AppTopBar() {
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Movie App",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+        )
+    }
+
+    @Composable
+    fun AppBottomBar() {
+        BottomAppBar {
+            BottomBarContent()
+        }
+    }
+    @Composable
+    fun BottomBarContent() {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            BottomBarButton(icon = Icons.Default.Home, label = "Home") {
+                // Handle Home action
+            }
+            BottomBarButton(icon = Icons.Default.Star, label = "Watchlist") {
+                // Handle Watchlist action
+            }
+        }
+    }
+
+    @Composable
+    fun BottomBarButton(icon: ImageVector, label: String, onClick: () -> Unit) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            IconButton(onClick = onClick) {
+                Icon(imageVector = icon, contentDescription = label)
+            }
+            Text(text = label)
+        }
+    }
 
 
     @Composable
@@ -143,28 +215,6 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun FirstTopAppBar(){
-        val context  = LocalContext.current.applicationContext
-        Scaffold(
-
-            topBar = {TopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.primary,
-            ),
-            title = {
-                Text("Movie App")
-            }
-        )}) {
-            innerPadding -> Text(
-            modifier = Modifier.padding(innerPadding),
-            text = "Example of a scaffold with a top bar."
-        )
-        }
-
-    }
 
     @OptIn(ExperimentalMaterial3Api::class)
 
@@ -174,72 +224,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             MovieAppMAD24Theme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
+                MovieApp()
 
-                )
-                {
-
-                    Scaffold(
-                        topBar = {
-
-                            TopAppBar(
-                                title = { Row(modifier = Modifier.fillMaxWidth()) {
-                                    Text(
-                                        text = "Movie App",
-                                        modifier = Modifier.weight(1f),
-                                        textAlign = TextAlign.Center, // Align text to center
-                                        style = MaterialTheme.typography.titleLarge
-                                    )
-                                } },
-
-                            )
-                        }
-                        ,bottomBar = {
-
-
-                            BottomAppBar {
-                                Row(modifier = Modifier.fillMaxWidth(),verticalAlignment = Alignment.CenterVertically,horizontalArrangement = Arrangement.SpaceAround)
-                                    {
-                                        Column {
-                                            IconButton(onClick = { /*TODO*/ }) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Home,
-                                                    contentDescription = "Home"
-                                                )
-                                            }
-                                            Text(text="Home")
-                                        }
-                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                            IconButton(onClick = { /*TODO*/ }) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Star,
-                                                    contentDescription = "Watchlist"
-                                                )
-                                            }
-                                            Text(text = "Watchlist")
-                                        }
-
-                                    }
-
-
-                            }
-                        }
-                    ){
-                        innerPadding -> MovieList(movies = getMovies(), innerPaddingValues = innerPadding)
-
-                    }
-
-
-
-                    //MovieRow()
-                    val immutableListOfStrings = listOf("String1", "String2", "String3")
-                    //MovieList(movies = getMovies())
-                    /*Card {
-                        Image(painter = painterResource(id = R.drawable.movie_image), contentDescription = "placeholder_image")
-                    }*/
-                }
             }
         }
     }
@@ -304,13 +290,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Preview
-    @Composable
-    fun TopBarPreview(){
-        MovieAppMAD24Theme {
-            FirstTopAppBar()
-        }
-    }
+
 
     @Composable
     fun ToggleMovieDetails(movie: Movie){
@@ -323,12 +303,7 @@ class MainActivity : ComponentActivity() {
                 Text(text = "Rating: "+ movie.rating)
                 Text(text = "Plot: "+ movie.plot)
             }
-        
-
-
     }
-
-
 
 }
 
