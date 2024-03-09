@@ -51,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.InspectableModifier
@@ -59,10 +60,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.ui.theme.MovieAppMAD24Theme
 import org.w3c.dom.Text
+import androidx.compose.foundation.Image
+
 
 class MainActivity : ComponentActivity() {
 
@@ -85,8 +89,11 @@ class MainActivity : ComponentActivity() {
                 )
                 {
                     Image(
-                        painter = painterResource(id = R.drawable.movie_image),
-                        contentDescription = "placeholder_image",
+                        //painter = painterResource(id = R.drawable.movie_image),
+                        painter = rememberImagePainter(data =movie.images.first(), builder=  {
+                            crossfade(true)
+                        }),
+                        contentDescription = movie.title+" image",
                         contentScale = ContentScale.Crop
                     )
                     Box(
@@ -125,7 +132,7 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MovieList(movies: List<Movie>, innerPaddingValues: PaddingValues){
-        LazyColumn{
+        LazyColumn(contentPadding = innerPaddingValues){
             items(movies){
                 movie ->
                 MovieRow(movie)
