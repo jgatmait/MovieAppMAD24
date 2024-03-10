@@ -53,6 +53,8 @@ import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.ui.theme.MovieAppMAD24Theme
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Divider
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 
 
 class MainActivity : ComponentActivity() {
@@ -69,7 +71,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+
     @Composable
     fun AppScaffold() {
         Scaffold(
@@ -83,7 +85,10 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun AppTopBar() {
-        TopAppBar(
+        TopAppBar(colors = topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
             title = {
                 Text(
                     text = "Movie App",
@@ -97,7 +102,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun AppBottomBar() {
-        BottomAppBar {
+        BottomAppBar (
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.primary,
+        )  {
             NavigationBarItem()
         }
     }
@@ -144,7 +152,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MovieRow(movie: Movie){
         var expanded by remember { mutableStateOf(false) }
-        var favorited by remember { mutableStateOf(false) }
+        var favorite by remember { mutableStateOf(false) }
 
         Card (modifier = Modifier
             .fillMaxWidth()
@@ -177,9 +185,9 @@ class MainActivity : ComponentActivity() {
                         Icon(
                             //tint = MaterialTheme.colorScheme.secondary,
 
-                            modifier = Modifier.clickable {favorited = !favorited   },
-                            imageVector = if (favorited) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = if (favorited) "Remove from Favorites" else "Add to Favorites"
+                            modifier = Modifier.clickable {favorite = !favorite   },
+                            imageVector = if (favorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = if (favorite) "Remove from Favorites" else "Add to Favorites"
                         )
                     }
 
@@ -212,6 +220,7 @@ class MainActivity : ComponentActivity() {
             Text(text = "Genre: " + movie.genre)
             Text(text = "Actors: "+ movie.actors)
             Text(text = "Rating: "+ movie.rating)
+            Divider(modifier = Modifier.padding(10.dp))
             Text(text = "Plot: "+ movie.plot)
         }
     }
@@ -232,13 +241,16 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun DefaultPreview(){
         MovieAppMAD24Theme {
-            val immutableListOfStrings = listOf("Avatar", "madmax", "enchanted")
+            //val immutableListOfStrings = listOf("Avatar", "madmax", "enchanted")
             //MovieList(movies = getMovies())
 
             Scaffold(
                 topBar = {
 
-                    TopAppBar(
+                    TopAppBar(colors = topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
                         title = { Row(modifier = Modifier.fillMaxWidth()) {
                             Text(
                                 text = "Movie App",
