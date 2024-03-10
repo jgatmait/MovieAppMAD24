@@ -71,6 +71,90 @@ import androidx.compose.material.icons.filled.Favorite
 
 class MainActivity : ComponentActivity() {
 
+
+
+    @Composable
+    fun MovieApp() {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            AppScaffold()
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun AppScaffold() {
+        Scaffold(
+            topBar = { AppTopBar() },
+            bottomBar = { AppBottomBar() }
+        ) { innerPadding ->
+            MovieList(movies = getMovies(), innerPaddingValues = innerPadding)
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun AppTopBar() {
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Movie App",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+        )
+    }
+
+    @Composable
+    fun AppBottomBar() {
+        BottomAppBar {
+            BottomBarContent()
+        }
+    }
+
+    @Composable
+    fun BottomBarContent() {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            BottomBarButton(icon = Icons.Default.Home, label = "Home") {
+                // Handle Home action
+            }
+            BottomBarButton(icon = Icons.Default.Star, label = "Watchlist") {
+                // Handle Watchlist action
+            }
+        }
+    }
+
+    @Composable
+    fun BottomBarButton(icon: ImageVector, label: String, onClick: () -> Unit) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            IconButton(onClick = onClick) {
+                Icon(imageVector = icon, contentDescription = label)
+            }
+            Text(text = label)
+        }
+    }
+
+
+    @Composable
+    fun MovieList(movies: List<Movie>, innerPaddingValues: PaddingValues){
+        LazyColumn(contentPadding = innerPaddingValues){
+            items(movies){
+                movie ->
+                MovieRow(movie)
+
+            }
+        }
+
+    }
+
     @Composable
     fun MovieRow(movie: Movie){
         var expanded by remember { mutableStateOf(false) }
@@ -78,7 +162,7 @@ class MainActivity : ComponentActivity() {
 
         Card (modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp), 
+            .padding(5.dp),
             shape = ShapeDefaults.Large,
             elevation = CardDefaults.cardElevation(10.dp)
         ) {
@@ -124,108 +208,35 @@ class MainActivity : ComponentActivity() {
                         imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                         contentDescription = if (expanded) "Collapse" else "Expand")
 
-                    }
-
                 }
-                AnimatedVisibility(visible = expanded) {
-                    ToggleMovieDetails(movie = movie)
+
             }
-        }
-        }
-
-    @Composable
-    fun MovieApp() {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            AppScaffold()
-        }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun AppScaffold() {
-        Scaffold(
-            topBar = { AppTopBar() },
-            bottomBar = { AppBottomBar() }
-        ) { innerPadding ->
-            MovieList(movies = getMovies(), innerPaddingValues = innerPadding)
-        }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun AppTopBar() {
-        TopAppBar(
-            title = {
-                Text(
-                    text = "Movie App",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
-        )
-    }
-
-    @Composable
-    fun AppBottomBar() {
-        BottomAppBar {
-            BottomBarContent()
-        }
-    }
-    @Composable
-    fun BottomBarContent() {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            BottomBarButton(icon = Icons.Default.Home, label = "Home") {
-                // Handle Home action
-            }
-            BottomBarButton(icon = Icons.Default.Star, label = "Watchlist") {
-                // Handle Watchlist action
+            AnimatedVisibility(visible = expanded) {
+                ToggleMovieDetails(movie = movie)
             }
         }
     }
 
     @Composable
-    fun BottomBarButton(icon: ImageVector, label: String, onClick: () -> Unit) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            IconButton(onClick = onClick) {
-                Icon(imageVector = icon, contentDescription = label)
-            }
-            Text(text = label)
+    fun ToggleMovieDetails(movie: Movie){
+        Column {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "Director: "+ movie.director)
+            Text(text = "Released: "+ movie.year)
+            Text(text = "Genre: " + movie.genre)
+            Text(text = "Actors: "+ movie.actors)
+            Text(text = "Rating: "+ movie.rating)
+            Text(text = "Plot: "+ movie.plot)
         }
     }
 
-
-    @Composable
-    fun MovieList(movies: List<Movie>, innerPaddingValues: PaddingValues){
-        LazyColumn(contentPadding = innerPaddingValues){
-            items(movies){
-                movie ->
-                MovieRow(movie)
-
-            }
-        }
-
-    }
-
-
-
-    @OptIn(ExperimentalMaterial3Api::class)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             MovieAppMAD24Theme {
-                // A surface container using the 'background' color from the theme
                 MovieApp()
-
             }
         }
     }
@@ -292,18 +303,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-    @Composable
-    fun ToggleMovieDetails(movie: Movie){
-            Column {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(text = "Director: "+ movie.director)
-                Text(text = "Released: "+ movie.year)
-                Text(text = "Genre: " + movie.genre)
-                Text(text = "Actors: "+ movie.actors)
-                Text(text = "Rating: "+ movie.rating)
-                Text(text = "Plot: "+ movie.plot)
-            }
-    }
+
 
 }
 
