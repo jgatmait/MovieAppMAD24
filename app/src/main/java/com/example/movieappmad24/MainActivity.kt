@@ -1,5 +1,6 @@
 package com.example.movieappmad24
 
+import Navigation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -57,10 +58,17 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 
 
+
 class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+                Navigation()
+            }
+        }
+    }
 
-
-
+/*
     @Composable
     fun MovieApp() {
         Surface(
@@ -225,85 +233,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            MovieAppMAD24Theme {
-                MovieApp()
-            }
-        }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Preview
-    @Composable
-    fun DefaultPreview(){
-        MovieAppMAD24Theme {
-            //val immutableListOfStrings = listOf("Avatar", "madmax", "enchanted")
-            //MovieList(movies = getMovies())
-
-            Scaffold(
-                topBar = {
-
-                    TopAppBar(colors = topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
-                    ),
-                        title = { Row(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                text = "Movie App",
-                                modifier = Modifier.weight(1f),
-                                textAlign = TextAlign.Center, // Align text to center
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        } },
-
-                        )
-                }
-                ,bottomBar = {
-
-
-                    BottomAppBar {
-                        Row(modifier = Modifier.fillMaxWidth(),verticalAlignment = Alignment.CenterVertically,horizontalArrangement = Arrangement.SpaceEvenly)
-                        {
-                            Column {
-                                IconButton(onClick = { /*TODO*/ }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Home,
-                                        contentDescription = "Home"
-                                    )
-                                }
-                                Text(text="Home")
-                            }
-                            Column {
-                                IconButton(onClick = { /*TODO*/ }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Star,
-                                        contentDescription = "Watchlist"
-                                    )
-                                }
-                                Text(text = "Watchlist")
-                            }
-
-                        }
-
-
-                    }
-                }
-            ){
-                    innerPadding -> MovieList(movies = getMovies(), innerPaddingValues = innerPadding)
-
-            }
-        }
-    }
+*/
 
 
 
 
 
-}
+
+
+
+
 
 
 
