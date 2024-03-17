@@ -51,6 +51,9 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.getMovies
+import com.example.movieappmad24.navigation.Screen
+import com.example.movieappmad24.ui.components.AppBottomBar
+import com.example.movieappmad24.ui.components.AppTopBar
 
 @Composable
 fun WatchlistScreen(navController : NavController){
@@ -73,13 +76,13 @@ fun MovieApp(navController: NavController) {
 @Composable
 fun AppScaffold(navController: NavController) {
     Scaffold(
-        topBar = { AppTopBar() },
+        topBar = { AppTopBar(navController, movieId = null, title = "Watchlist") },
         bottomBar = { AppBottomBar(navController) }
     ) { innerPadding ->
         MovieList(navController, movies = getMovies().subList(0,2), innerPaddingValues = innerPadding)
     }
 }
-
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar() {
@@ -117,13 +120,13 @@ fun NavigationBarItem(navController: NavController) {
     ) {
         NavigationBarButton(icon = Icons.Default.Home, label = "Home") {
             // Handle Home action
-            navController.navigate("homescreen")
+            navController.navigate(Screen.Home.route)
 
         }
-        NavigationBarButton(icon = Icons.Default.Star, label = "Watchlist") {
+        //NavigationBarButton(icon = Icons.Default.Star, label = "Watchlist") {
             // Handle Watchlist action
 
-        }
+        //}
     }
 }
 
@@ -136,7 +139,7 @@ fun NavigationBarButton(icon: ImageVector, label: String, onClick: () -> Unit) {
         Text(text = label)
     }
 }
-
+*/
 
 @Composable
 fun MovieList(navController: NavController, movies: List<Movie>, innerPaddingValues: PaddingValues, ){
@@ -192,7 +195,6 @@ fun MovieRow(navController: NavController, movie: Movie, onItemClick: (String) -
                 ) {
                     Icon(
                         //tint = MaterialTheme.colorScheme.secondary,
-
                         modifier = Modifier.clickable {favorite = !favorite   },
                         imageVector = if (favorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = if (favorite) "Remove from Favorites" else "Add to Favorites"

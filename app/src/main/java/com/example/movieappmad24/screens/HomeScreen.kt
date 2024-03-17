@@ -59,7 +59,9 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.compose.rememberNavController
-
+import com.example.movieappmad24.navigation.Screen
+import com.example.movieappmad24.ui.components.AppBottomBar
+import com.example.movieappmad24.ui.components.AppTopBar
 
 
 @Composable
@@ -83,14 +85,14 @@ fun MovieApp(navController: NavController) {
 @Composable
 fun AppScaffold(navController: NavController) {
     Scaffold(
-        topBar = { AppTopBar() },
+        topBar = { AppTopBar(navController, movieId = null, title = "Movie App") },
         bottomBar = { AppBottomBar(navController) }
     ) { innerPadding ->
         MovieList(navController, movies = getMovies(), innerPaddingValues = innerPadding)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/*@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar() {
     TopAppBar(colors = topAppBarColors(
@@ -132,7 +134,7 @@ fun NavigationBarItem(navController: NavController) {
         }
         NavigationBarButton(icon = Icons.Default.Star, label = "Watchlist") {
             // Handle Watchlist action
-            navController.navigate("watchlistscreen")
+            navController.navigate(Screen.Watchlist.route)
         }
     }
 }
@@ -146,7 +148,7 @@ fun NavigationBarButton(icon: ImageVector, label: String, onClick: () -> Unit) {
         Text(text = label)
     }
 }
-
+*/
 
 @Composable
 fun MovieList(navController: NavController, movies: List<Movie>, innerPaddingValues: PaddingValues){
@@ -155,7 +157,8 @@ fun MovieList(navController: NavController, movies: List<Movie>, innerPaddingVal
                 movie ->
             MovieRow(navController, movie){
 
-                    navController.navigate("detailScreen/${movie.id}")
+                    //navController.navigate("detailScreen/${movie.id}")
+                    navController.navigate(Screen.Detail.createRoute(movie.id))
             }
 
                 //Log.d("MovieList", "My callback value: $movieId")
