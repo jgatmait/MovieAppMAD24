@@ -13,6 +13,12 @@ data class Movie(
     val rating: String
 )
 
+
+fun getMovieFromId(movieId: String?): Movie {
+    var movies = getMovies()
+    return movies.find{it.id==movieId}!!
+}
+
 fun getMovies(): List<Movie> {
     return listOf(
         Movie(id = "tt0499549",

@@ -61,6 +61,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.compose.rememberNavController
 
 
+
 @Composable
 fun HomeScreen(navController : NavController){
     MovieApp(navController)
@@ -83,7 +84,7 @@ fun MovieApp(navController: NavController) {
 fun AppScaffold(navController: NavController) {
     Scaffold(
         topBar = { AppTopBar() },
-        bottomBar = { AppBottomBar() }
+        bottomBar = { AppBottomBar(navController) }
     ) { innerPadding ->
         MovieList(navController, movies = getMovies(), innerPaddingValues = innerPadding)
     }
@@ -108,17 +109,17 @@ fun AppTopBar() {
 }
 
 @Composable
-fun AppBottomBar() {
+fun AppBottomBar(navController: NavController) {
     BottomAppBar (
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.primary,
     )  {
-        NavigationBarItem()
+        NavigationBarItem(navController)
     }
 }
 
 @Composable
-fun NavigationBarItem() {
+fun NavigationBarItem(navController: NavController) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -126,9 +127,12 @@ fun NavigationBarItem() {
     ) {
         NavigationBarButton(icon = Icons.Default.Home, label = "Home") {
             // Handle Home action
+
+
         }
         NavigationBarButton(icon = Icons.Default.Star, label = "Watchlist") {
             // Handle Watchlist action
+            navController.navigate("watchlistscreen")
         }
     }
 }
@@ -149,12 +153,12 @@ fun MovieList(navController: NavController, movies: List<Movie>, innerPaddingVal
     LazyColumn(contentPadding = innerPaddingValues){
         items(movies){
                 movie ->
-            MovieRow(navController, movie)//{movieId ->{
-                //navController.navigate("detailScreen/${movie.id}")
+            MovieRow(navController, movie){
+
+                    navController.navigate("detailScreen/${movie.id}")
+            }
 
                 //Log.d("MovieList", "My callback value: $movieId")
-
-
 
             }
 
@@ -168,7 +172,7 @@ fun MovieRow(navController: NavController, movie: Movie, onItemClick: (String) -
     var expanded by remember { mutableStateOf(false) }
     var favorite by remember { mutableStateOf(false) }
 
-    Card (modifier = Modifier.clickable { /*onItemClick(movie.id)*/ navController.navigate("detailScreen/$onItemClick.movieId") }
+    Card (modifier = Modifier.clickable { onItemClick(movie.id)}//*/ navController.navigate("detailScreen/$onItemClick.movieId") }
         .fillMaxWidth()
         .padding(5.dp),
         shape = ShapeDefaults.Large,
@@ -238,3 +242,4 @@ fun ToggleMovieDetails(movie: Movie){
         Text(text = "Plot: "+ movie.plot)
     }
 }
+
