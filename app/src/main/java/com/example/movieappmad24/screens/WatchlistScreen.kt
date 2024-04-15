@@ -50,187 +50,37 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.movieappmad24.models.Movie
+import com.example.movieappmad24.models.MoviesViewModel
 import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.navigation.Screen
-import com.example.movieappmad24.ui.components.AppBottomBar
-import com.example.movieappmad24.ui.components.AppTopBar
+
+import com.example.movieappmad24.ui.components.MovieList
+import com.example.movieappmad24.ui.components.SimpleBottomAppBar
+import com.example.movieappmad24.ui.components.SimpleTopAppBar
 
 @Composable
-fun WatchlistScreen(navController : NavController){
-    MovieApp(navController)
-}
-
-
-
-@Composable
-fun MovieApp(navController: NavController) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        AppScaffold(navController)
-    }
-}
-
-
-@Composable
-fun AppScaffold(navController: NavController) {
-    Scaffold(
-        topBar = { AppTopBar(navController, movieId = null, title = "Watchlist") },
-        bottomBar = { AppBottomBar(navController) }
-    ) { innerPadding ->
-        MovieList(navController, movies = getMovies().subList(0,2), innerPaddingValues = innerPadding)
-    }
-}
-/*
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppTopBar() {
-    TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        titleContentColor = MaterialTheme.colorScheme.primary,
-    ),
-        title = {
-            Text(
-                text = "Your Watchlist",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
+fun WatchlistScreen(
+    navController: NavController,
+    moviesViewModel: MoviesViewModel
+){
+    Scaffold (
+        topBar = {
+            SimpleTopAppBar(title = "Your Watchlist")
+        },
+        bottomBar = {
+            SimpleBottomAppBar(
+                navController = navController
             )
         }
-    )
-}
+    ){ innerPadding ->
 
-@Composable
-fun AppBottomBar(navController: NavController) {
-    BottomAppBar (
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.primary,
-    )  {
-        NavigationBarItem(navController)
-    }
-}
-
-@Composable
-fun NavigationBarItem(navController: NavController) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        NavigationBarButton(icon = Icons.Default.Home, label = "Home") {
-            // Handle Home action
-            navController.navigate(Screen.Home.route)
-
-        }
-        //NavigationBarButton(icon = Icons.Default.Star, label = "Watchlist") {
-            // Handle Watchlist action
-
-        //}
-    }
-}
-
-@Composable
-fun NavigationBarButton(icon: ImageVector, label: String, onClick: () -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        IconButton(onClick = onClick) {
-            Icon(imageVector = icon, contentDescription = label)
-        }
-        Text(text = label)
-    }
-}
-*/
-
-@Composable
-fun MovieList(navController: NavController, movies: List<Movie>, innerPaddingValues: PaddingValues, ){
-    LazyColumn(contentPadding = innerPaddingValues){
-        items(movies){
-                movie ->
-            MovieRow(navController, movie){
-
-                navController.navigate("detailScreen/${movie.id}")
-            }
-
-            //Log.d("MovieList", "My callback value: $movieId")
-
-        }
+        MovieList(
+            modifier = Modifier.padding(innerPadding),
+            movies = moviesViewModel.favoriteMovies,
+            navController = navController,
+            moviesViewModel = moviesViewModel
+        )
 
     }
 }
 
-
-
-@Composable
-fun MovieRow(navController: NavController, movie: Movie, onItemClick: (String) ->Unit = {}){
-    var expanded by remember { mutableStateOf(false) }
-    var favorite by remember { mutableStateOf(false) }
-
-    Card (modifier = Modifier.clickable { onItemClick(movie.id)}//*/ navController.navigate("detailScreen/$onItemClick.movieId") }
-        .fillMaxWidth()
-        .padding(5.dp),
-        shape = ShapeDefaults.Large,
-        elevation = CardDefaults.cardElevation(10.dp)
-    ) {
-        Column {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-                contentAlignment = Alignment.Center
-            )
-            {
-                Image(
-                    //painter = painterResource(id = R.drawable.movie_image),
-                    painter = rememberImagePainter(data =movie.images.first(), builder=  {
-                        crossfade(true)
-                    }),
-                    contentDescription = movie.title+" image",
-                    contentScale = ContentScale.Crop
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(10.dp),
-                    contentAlignment = Alignment.TopEnd
-                ) {
-                    Icon(
-                        //tint = MaterialTheme.colorScheme.secondary,
-                        modifier = Modifier.clickable {favorite = !favorite   },
-                        imageVector = if (favorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = if (favorite) "Remove from Favorites" else "Add to Favorites"
-                    )
-                }
-
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = movie.title, style= MaterialTheme.typography.titleMedium)
-                Icon(modifier = Modifier.clickable {expanded = !expanded   },
-                    imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                    contentDescription = if (expanded) "Collapse" else "Expand")
-
-            }
-
-        }
-        AnimatedVisibility(visible = expanded) {
-            com.example.movieappmad24.ToggleMovieDetails(movie = movie)
-        }
-    }
-}
-
-@Composable
-fun ToggleMovieDetails(movie: Movie) {
-    Column {
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Director: " + movie.director)
-        Text(text = "Released: " + movie.year)
-        Text(text = "Genre: " + movie.genre)
-        Text(text = "Actors: " + movie.actors)
-        Text(text = "Rating: " + movie.rating)
-        Divider(modifier = Modifier.padding(10.dp))
-        Text(text = "Plot: " + movie.plot)
-    }
-}
