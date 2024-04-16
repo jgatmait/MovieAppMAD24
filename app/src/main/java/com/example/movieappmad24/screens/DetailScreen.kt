@@ -12,6 +12,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -23,6 +24,16 @@ import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.ui.components.HorizontalScrollableImageView
 import com.example.movieappmad24.ui.components.MovieRow
 import com.example.movieappmad24.ui.components.SimpleTopAppBar
+
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.media3.exoplayer.ExoPlayer
+import com.example.movieappmad24.ui.components.MovieTrailerPlayer
+
 
 //import com.example.movieappmad24.ui.components.MovieImagesRow
 
@@ -56,6 +67,12 @@ fun DetailScreen(
                     onFavoriteClick = { movieId ->
                     moviesViewModel.toggleFavoriteMovie(movieId) },
                     onItemClick = {})
+
+
+
+                MovieTrailerPlayer(movie = movie)
+
+
                 HorizontalScrollableImageView(movie = movie)
             }
         }

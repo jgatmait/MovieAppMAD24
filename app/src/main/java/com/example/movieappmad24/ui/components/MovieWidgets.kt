@@ -1,5 +1,9 @@
 package com.example.movieappmad24.ui.components
 
+import android.util.Log
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -8,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,6 +58,19 @@ import com.example.movieappmad24.models.Movie
 import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.navigation.Screen
 import com.example.movieappmad24.models.MoviesViewModel
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.RawResourceDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
+
+
 
 //code template taken from Leon's branch lecture 04
 
@@ -159,7 +177,7 @@ fun FavoriteIcon(
         Icon(
             modifier = Modifier.clickable {
                 onFavoriteClick() },
-            tint = MaterialTheme.colorScheme.secondary,
+            tint = Color.Red,
             imageVector =
             if (isFavorite) {
                 Icons.Filled.Favorite
@@ -245,4 +263,54 @@ fun HorizontalScrollableImageView(movie: Movie) {
             }
         }
     }
+}
+
+
+@OptIn(UnstableApi::class) @Composable
+fun MovieTrailerPlayer(movie: Movie) {
+
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            val mediaItem = MediaItem.fromUri("android.resource://${context.packageName}/${movie.trailer}")
+            setMediaItem(mediaItem)
+            prepare()
+        }
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val lifecycle = lifecycleOwner.lifecycle
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    Log.e("On_resume" , "resumed")
+                    exoPlayer.play() }
+                Lifecycle.Event.ON_PAUSE -> {
+                    Log.e("On_pause" , "paused")
+                    exoPlayer.pause()}
+                Lifecycle.Event.ON_STOP -> {Log.e("On_stop" , "stopped")
+                    exoPlayer.stop()}
+                Lifecycle.Event.ON_DESTROY -> {Log.e("On_destroy" , "destroy")
+                    exoPlayer.release()}
+                else -> {}
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
+            exoPlayer.release()
+        }
+    }
+
+    AndroidView(
+        factory = {
+            PlayerView(context).also { playerView ->
+                playerView.player = exoPlayer
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(16f / 10f)
+    )
 }

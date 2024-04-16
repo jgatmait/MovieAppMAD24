@@ -135,12 +135,14 @@ fun SimpleTopAppBar(
 ){
     CenterAlignedTopAppBar(
         title = { Text(title) },
-        colors = TopAppBarDefaults.topAppBarColors(
+        colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.primary
         ),
         navigationIcon = navigationIcons
     )
+
+
 }
 
 @Composable
