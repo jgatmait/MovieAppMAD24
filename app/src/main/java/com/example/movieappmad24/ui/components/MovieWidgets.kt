@@ -54,7 +54,7 @@ import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.navigation.Screen
 import com.example.movieappmad24.models.MoviesViewModel
 
-
+//code template taken from Leon's branch lecture 04
 
 @Composable
 fun MovieList(
@@ -64,11 +64,11 @@ fun MovieList(
     moviesViewModel: MoviesViewModel
 
 ){
-    LazyColumn(modifier = modifier) {
+    LazyColumn  (modifier){
         items(movies) { movie ->
             MovieRow(
                 movie = movie,
-                modifier = modifier,
+                //modifier = modifier,
                 onFavoriteClick = { movieId ->
                     moviesViewModel.toggleFavoriteMovie(movieId)
                 },
@@ -82,14 +82,14 @@ fun MovieList(
 
 @Composable
 fun MovieRow(
-    modifier: Modifier,
+    //modifier: Modifier, //uncomment, this is messing up padding
     movie: Movie,
     onFavoriteClick: (String) -> Unit = {},
     onItemClick: (String) -> Unit = {}
 ){
-    Card(modifier = modifier
+    Card(modifier = Modifier // it's probably not good practice to use a variable name with just lowercase of the class it is using.. change M to m and all the padding is messed up
         .fillMaxWidth()
-        .padding(5.dp)
+        .padding(vertical = 2.dp, horizontal = 5.dp)
         .clickable {
             onItemClick(movie.id)
         },
@@ -104,7 +104,7 @@ fun MovieRow(
                 onFavoriteClick = { onFavoriteClick(movie.id) }
             )
 
-            MovieDetails(modifier = modifier.padding(12.dp), movie = movie)
+            MovieDetails(modifier = Modifier.padding(12.dp), movie = movie)
 
         }
     }
@@ -159,7 +159,7 @@ fun FavoriteIcon(
         Icon(
             modifier = Modifier.clickable {
                 onFavoriteClick() },
-            tint = Color.Red,
+            tint = MaterialTheme.colorScheme.secondary,
             imageVector =
             if (isFavorite) {
                 Icons.Filled.Favorite

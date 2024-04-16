@@ -49,8 +49,10 @@ fun DetailScreen(
                 }
             }
         ){ innerPadding ->
-            Column {
-                MovieRow(modifier = Modifier.padding(innerPadding), movie = movie,
+            Column (modifier = Modifier.padding(innerPadding)){
+                MovieRow(
+                    //modifier = Modifier.padding(innerPadding),
+                    movie = movie,
                     onFavoriteClick = { movieId ->
                     moviesViewModel.toggleFavoriteMovie(movieId) },
                     onItemClick = {})

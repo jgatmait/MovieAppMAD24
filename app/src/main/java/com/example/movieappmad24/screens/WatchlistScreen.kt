@@ -60,8 +60,7 @@ import com.example.movieappmad24.ui.components.SimpleTopAppBar
 
 @Composable
 fun WatchlistScreen(
-    navController: NavController,
-    moviesViewModel: MoviesViewModel
+    navController: NavController, moviesViewModel: MoviesViewModel
 ){
     Scaffold (
         topBar = {
@@ -75,10 +74,7 @@ fun WatchlistScreen(
     ){ innerPadding ->
 
         MovieList(
-            modifier = Modifier.padding(innerPadding),
-            movies = moviesViewModel.favoriteMovies,
-            navController = navController,
-            moviesViewModel = moviesViewModel
+            modifier = Modifier.padding(innerPadding), movies = moviesViewModel.favoriteMovies, navController = navController, moviesViewModel = moviesViewModel
         )
 
     }
