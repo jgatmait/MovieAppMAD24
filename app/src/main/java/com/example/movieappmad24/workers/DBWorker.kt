@@ -14,14 +14,14 @@ class DBWorker (ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, p
     private val repository = MovieRepository(movieDao = dao)
     override suspend fun doWork(): Result {
         return try {
-            var movieId: Long = 1
+            var id: Long = 1
             val movies = getMovies()
             movies.forEach{
                 repository.insertMovie(it)
                 it.images.forEach{url ->
-                    repository.insertMovieImages(MovieImage(movieId = movieId, url = url))
+                    repository.insertMovieImages(MovieImage(movieId = id, url = url))
                 }
-                movieId += 1
+                id += 1
             }
             Result.success()
         } catch (throwable: Throwable) {

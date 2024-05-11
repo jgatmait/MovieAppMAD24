@@ -65,7 +65,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.example.movieappmad24.models.MovieWithImage
 import com.example.movieappmad24.viewmodels.MovieViewModel
-import com.example.movieappmad24.viewmodels.WatchlistViewModel
 
 
 //code template taken from Leon's branch lecture 04
@@ -237,9 +236,9 @@ fun MovieDetails(modifier: Modifier, movie: Movie) {
 
 
 @Composable
-fun HorizontalScrollableImageView(movie: Movie) {
+fun HorizontalScrollableImageView(movieWithImage: MovieWithImage) {
     LazyRow {
-        items(movie.images) { image ->
+        items(movieWithImage.images) { image ->
             Card(
                 modifier = Modifier
                     .padding(12.dp)
@@ -249,7 +248,7 @@ fun HorizontalScrollableImageView(movie: Movie) {
 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(image)
+                        .data(image.url)
                         .crossfade(true)
                         .build(),
                     contentDescription = "Movie poster",

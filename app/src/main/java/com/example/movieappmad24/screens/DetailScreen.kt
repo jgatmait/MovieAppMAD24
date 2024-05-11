@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -19,7 +19,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.movieappmad24.dependencyinjection.InjectorUtils
 //import com.example.movieappmad24.models.getMovieFromId
-import com.example.movieappmad24.models.getMovies
 
 import com.example.movieappmad24.ui.components.HorizontalScrollableImageView
 import com.example.movieappmad24.ui.components.MovieRow
@@ -69,12 +68,12 @@ fun DetailScreen(
                     }
                 )
 
-                Divider(modifier = Modifier.padding(6.dp))
+                HorizontalDivider(modifier = Modifier.padding(6.dp))
 
                 MovieTrailerPlayer(movie = movieWithImage.movie)
 
 
-                HorizontalScrollableImageView(movie = movieWithImage.movie)
+                HorizontalScrollableImageView(movieWithImage = movieWithImage)
             }
         }
     }

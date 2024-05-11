@@ -11,7 +11,7 @@ data class MovieWithImage(
     @Embedded val movie: Movie,
     @Relation(
         parentColumn = "dbId",
-        entityColumn = "id"
+        entityColumn = "movieId"
     )
     val images: List<MovieImage>
 )
