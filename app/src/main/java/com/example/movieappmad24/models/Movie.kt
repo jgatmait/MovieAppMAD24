@@ -1,36 +1,45 @@
 package com.example.movieappmad24.models
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 
+@Entity(tableName = "movies")
 data class Movie(
-    val id: String,
-    val title: String,
-    val year: String,
-    val genre: String,
-    val director: String,
-    val actors: String,
-    val plot: String,
-    val images: List<String>,
-    val trailer: String,
-    val rating: String,
-    val initialIsFavorite: Boolean = false
-    ){
-    var isFavorite by mutableStateOf(initialIsFavorite)
+    @PrimaryKey(autoGenerate = true) val dbId: Long = 0,
+    var id: String,
+    var title: String,
+    var year: String,
+    var genre: String,
+    var director: String,
+    var actors: String,
+    var plot: String,
+    @Ignore var images: List<String>,
+    var trailer: String,
+    var rating: String,
+    var isFavoriteDB: Boolean = false,){
+    constructor(dbId: Long,
+                id: String,
+                title: String,
+                year: String,
+                genre: String,
+                director: String,
+                actors: String,
+                plot: String,
+                trailer: String,
+                rating: String,
+                isFavoriteDB: Boolean)
+            : this(dbId,id,title,year,genre,director,actors,plot, images = emptyList(),trailer,rating,isFavoriteDB)
 }
+/*,
+val initialIsFavorite: Boolean = false
+) {
+var isFavorite by mutableStateOf(initialIsFavorite)
+}*/
 
-
-
-
-
-
-
-fun getMovieFromId(movieId: String?): Movie {
-    var movies = getMovies()
-    return movies.find{it.id==movieId}!!
-}
 
 fun getMovies(): List<Movie> {
     return listOf(
@@ -47,8 +56,7 @@ fun getMovies(): List<Movie> {
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTMxOTEwNDcxN15BMl5BanBnXkFtZTcwOTg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg"),
             trailer = "trailer_placeholder",
-            rating = "7.9"
-        ),
+            rating = "7.9"),
 
         Movie(id = "tt0416449",
             title = "300",
@@ -171,3 +179,6 @@ fun getMovies(): List<Movie> {
 
         )
 }
+
+
+

@@ -1,8 +1,6 @@
 package com.example.movieappmad24.ui.components
 
 import android.util.Log
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -55,21 +53,19 @@ import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.movieappmad24.models.Movie
-import com.example.movieappmad24.models.getMovies
 import com.example.movieappmad24.navigation.Screen
-import com.example.movieappmad24.models.MoviesViewModel
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.RawResourceDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-
+import com.example.movieappmad24.models.MovieWithImage
+import com.example.movieappmad24.viewmodels.MovieViewModel
+import com.example.movieappmad24.viewmodels.WatchlistViewModel
 
 
 //code template taken from Leon's branch lecture 04
@@ -77,23 +73,22 @@ import androidx.media3.ui.PlayerView
 @Composable
 fun MovieList(
     modifier: Modifier,
-    movies: List<Movie>,
+    movies: List<MovieWithImage>,
     navController: NavController,
-    moviesViewModel: MoviesViewModel
+    moviesViewModel: MovieViewModel
 
 ){
     LazyColumn  (modifier){
-        items(movies) { movie ->
+        items(movies) { movieWithImage ->
             MovieRow(
-                movie = movie,
+                movieWithImage = movieWithImage,
                 //modifier = modifier,
-                onFavoriteClick = { movieId ->
-                    moviesViewModel.toggleFavoriteMovie(movieId)
-                },
-                onItemClick = { movieId ->
-                    navController.navigate(route = Screen.Detail.withId(movieId))
+                onFavoriteClick = {
+                    moviesViewModel.updateFavorite(movieWithImage)
                 }
-            )
+            ) {
+                navController.navigate(route = Screen.Detail.withId(id = movieWithImage.movie.dbId.toString()))
+            }
         }
     }
 }
@@ -101,7 +96,7 @@ fun MovieList(
 @Composable
 fun MovieRow(
     //modifier: Modifier, //uncomment, this is messing up padding
-    movie: Movie,
+    movieWithImage: MovieWithImage,
     onFavoriteClick: (String) -> Unit = {},
     onItemClick: (String) -> Unit = {}
 ){
@@ -109,7 +104,7 @@ fun MovieRow(
         .fillMaxWidth()
         .padding(vertical = 2.dp, horizontal = 5.dp)
         .clickable {
-            onItemClick(movie.id)
+            onItemClick(movieWithImage.movie.id)
         },
         shape = ShapeDefaults.Large,
         elevation = CardDefaults.cardElevation(10.dp)
@@ -117,12 +112,12 @@ fun MovieRow(
         Column {
 
             MovieCardHeader(
-                imageUrl = movie.images[0],
-                isFavorite = movie.isFavorite,
-                onFavoriteClick = { onFavoriteClick(movie.id) }
+                imageUrl = movieWithImage.images[0].url, //if (movieWithImage.images.isNotEmpty()) movieWithImage.images[0].url else "https://images-na.ssl-images-amazon.com/images/M/MV5BZjZkN2M5ODgtMjQ2OC00ZjAxLWE1MjMtZDE0OTNmNGM0NWEwXkEyXkFqcGdeQXVyNjUxNzgwNTE@._V1_SX1777_CR0,0,1777,999_AL_.jpg",
+                isFavorite = movieWithImage.movie.isFavoriteDB,
+                onFavoriteClick = { onFavoriteClick(movieWithImage.movie.id) }
             )
 
-            MovieDetails(modifier = Modifier.padding(12.dp), movie = movie)
+            MovieDetails(modifier = Modifier.padding(12.dp), movie = movieWithImage.movie)
 
         }
     }
@@ -142,7 +137,7 @@ fun MovieCardHeader(
         contentAlignment = Alignment.Center
     ) {
 
-        MovieImage(imageUrl)
+        MovieImage(imageUrl= imageUrl)
 
         FavoriteIcon(isFavorite = isFavorite, onFavoriteClick)
     }
